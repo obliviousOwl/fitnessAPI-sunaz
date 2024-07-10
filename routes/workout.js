@@ -6,7 +6,9 @@ const router = express.Router();
 
 router.post("/addWorkout", verify, workoutController.addWorkout);
 
-router.get('/getMyWorkouts', verify, workoutController.getWorkout);
+router.get('/getMyWorkouts', verify, workoutController.getWorkouts);
+
+router.get('/getMyWorkout/:workoutId', verify, workoutController.getWorkout);
 
 router.patch('/updateWorkout/:workoutId', verify, workoutController.updateWorkout);
 

@@ -23,7 +23,8 @@ module.exports.addWorkout = async (req, res) => {
     }
 }
 
-module.exports.getWorkout = async (req, res) => {
+//Get all Workouts
+module.exports.getWorkouts = async (req, res) => {
 
     const workouts = await Workout.find({ userId: req.user.id });
     try {
@@ -38,6 +39,23 @@ module.exports.getWorkout = async (req, res) => {
         console.error('Error in getting workouts: ', err);
         return errors.status(500).send({ error: 'Error in getting workout' })
     }
+}
+
+//Get single Workout
+module.exports.getWorkout = async (req, res) => {
+    let workoutId = req.params.workoutId;
+    try{
+        const workout = await Workout.findOne({ userId: req.user.id, _id: workoutId});
+        if(workout) {
+            return res.status(404).send({ error: "Workout not found" })
+        }
+        return res.status(200).send(workout);
+    }
+    catch(err){
+        console.error('Error in getting workout: ', err);
+        return errors.status(500).send({ error: 'Error in getting workout' })
+    }
+    
 }
 
 module.exports.updateWorkout = async (req, res) => {
