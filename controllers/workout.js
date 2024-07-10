@@ -46,7 +46,7 @@ module.exports.getWorkout = async (req, res) => {
     let workoutId = req.params.workoutId;
     try{
         const workout = await Workout.findOne({ userId: req.user.id, _id: workoutId});
-        if(workout) {
+        if(!workout) {
             return res.status(404).send({ error: "Workout not found" })
         }
         return res.status(200).send(workout);
