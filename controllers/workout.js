@@ -1,5 +1,4 @@
 const Workout = require('../models/Workouts');
-const User = require('../models/Users');
 
 module.exports.addWorkout = async (req, res) => {
     

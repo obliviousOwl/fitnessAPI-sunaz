@@ -16,7 +16,7 @@ module.exports.registerUser = (req, res) => {
 	else if (req.body.password.length < 8) {
 	    return res.status(400).send({ error: 'Password must be atleast 8 characters' });
 	} else {
-		return newUser.save().then(user => res.status(201).send({ message: 'Registered SUccessfully'})).catch(saveErr => {
+		return newUser.save().then(user => res.status(201).send({ message: 'Registered Successfully'})).catch(saveErr => {
 
 			console.error('Error in saving the user: ', saveErr);
 
