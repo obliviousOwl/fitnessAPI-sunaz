@@ -49,7 +49,7 @@ module.exports.getWorkout = async (req, res) => {
         if(!workout) {
             return res.status(404).send({ error: "Workout not found" })
         }
-        return res.status(200).send(workout);
+        return res.status(200).send({workout});
     }
     catch(err){
         console.error('Error in getting workout: ', err);
