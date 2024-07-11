@@ -1,10 +1,10 @@
 const Workout = require('../models/Workouts');
 
 module.exports.addWorkout = async (req, res) => {
-    
+
     const workout = await Workout.findOne({ name: req.body.name });
-    if(workout) {
-        return res.status(409).send({ error: 'Workout already exists'})
+    if (workout) {
+        return res.status(409).send({ error: 'Workout already exists' })
     }
 
     let newWorkout = new Workout({
@@ -13,13 +13,13 @@ module.exports.addWorkout = async (req, res) => {
         duration: req.body.duration,
     })
 
-    try{
+    try {
         const savedWorkout = await newWorkout.save();
         return res.status(201).send(savedWorkout);
     }
     catch (err) {
-        console.log('Error in adding the course',err);
-        return res.status(500).send({ message: 'Error in adding workout'})
+        console.log('Error in adding the course', err);
+        return res.status(500).send({ message: 'Error in adding workout' })
     }
 }
 
@@ -28,14 +28,14 @@ module.exports.getWorkouts = async (req, res) => {
 
     const workouts = await Workout.find({ userId: req.user.id });
     try {
-        if(workouts.length > 0) {
+        if (workouts.length > 0) {
             return res.status(200).send({ workouts })
         }
         else {
-            return res.status(200).send({ message: 'No Workout found'})
+            return res.status(200).send({ message: 'No Workout found' })
         }
     }
-    catch(err){
+    catch (err) {
         console.error('Error in getting workouts: ', err);
         return errors.status(500).send({ error: 'Error in getting workout' })
     }
@@ -44,18 +44,18 @@ module.exports.getWorkouts = async (req, res) => {
 //Get single Workout
 module.exports.getWorkout = async (req, res) => {
     let workoutId = req.params.workoutId;
-    try{
-        const workout = await Workout.findOne({ userId: req.user.id, _id: workoutId});
-        if(!workout) {
+    try {
+        const workout = await Workout.findOne({ userId: req.user.id, _id: workoutId });
+        if (!workout) {
             return res.status(404).send({ error: "Workout not found" })
         }
-        return res.status(200).send({workout});
+        return res.status(200).send({ workout });
     }
-    catch(err){
+    catch (err) {
         console.error('Error in getting workout: ', err);
         return errors.status(500).send({ error: 'Error in getting workout' })
     }
-    
+
 }
 
 module.exports.updateWorkout = async (req, res) => {
@@ -65,51 +65,57 @@ module.exports.updateWorkout = async (req, res) => {
         duration: req.body.duration,
     }
 
-    try{
+    try {
         const updatedWorkout = await Workout.findByIdAndUpdate(workoutId, newWorkout);
-        if(updatedWorkout){
+        if (updatedWorkout) {
             return res.status(200).send({
                 message: "Workout updated successfully",
                 updatedWorkout
             })
         }
     }
-    catch(err) {
+    catch (err) {
         console.error('Error in updating workout: ', err);
-        return res.status(500).send({ error: 'Error in updating the workout '})
+        return res.status(500).send({ error: 'Error in updating the workout ' })
     }
 }
 
 module.exports.deleteWorkout = async (req, res) => {
     let workoutId = req.params.workoutId;
-    try{
+    try {
         const deletedWorkout = await Workout.findByIdAndDelete(workoutId);
-        if(!deletedWorkout){
-            return res.status(404).send({ error: 'Workout not found'});
+        if (!deletedWorkout) {
+            return res.status(404).send({ error: 'Workout not found' });
         }
 
-        return res.status(200).send({ message: 'Workout deleted successfully'});
+        return res.status(200).send({ message: 'Workout deleted successfully' });
     }
     catch (err) {
         console.log('error in deleting workout: ', err);
-        return res.status(500).send({error : 'error in deleting workout'});
+        return res.status(500).send({ error: 'error in deleting workout' });
     }
-    
+
 }
 
 module.exports.completeWorkout = async (req, res) => {
     let workoutId = req.params.workoutId;
-    updatedWorkout = await Workout.findById(workoutId);
 
-    if(!updatedWorkout){
-        return res.status(404).send({ error: 'Workout not found' });
+    try {
+        updatedWorkout = await Workout.findById(workoutId);
+
+        if (!updatedWorkout) {
+            return res.status(404).send({ error: 'Workout not found' });
+        }
+
+        updatedWorkout.status = 'completed'
+        await updatedWorkout.save();
+        return res.status(200).send({
+            message: 'Workout status updated successfully',
+            updatedWorkout
+        })
     }
-
-    updatedWorkout.status = 'completed'
-    await updatedWorkout.save();
-    return res.status(200).send({
-        message: 'Workout status updated successfully',
-        updatedWorkout
-    })
-
+    catch(err) {
+        console.log('error in completing workout: ', err);
+        return res.status(500).send({ error: 'error in completing workout' });
+    }
 }
