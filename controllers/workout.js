@@ -88,7 +88,7 @@ module.exports.deleteWorkout = async (req, res) => {
             return res.status(404).send({ error: 'Workout not found'});
         }
 
-        return res.status(200).send({ message: 'Workout deleted successfully '});
+        return res.status(200).send({ message: 'Workout deleted successfully'});
     }
     catch (err) {
         console.log('error in deleting workout: ', err);
@@ -102,7 +102,7 @@ module.exports.completeWorkout = async (req, res) => {
     updatedWorkout = await Workout.findById(workoutId);
 
     if(!updatedWorkout){
-        return res.status(404).send({ error: 'Workout not foun' });
+        return res.status(404).send({ error: 'Workout not found' });
     }
 
     updatedWorkout.status = 'completed'
